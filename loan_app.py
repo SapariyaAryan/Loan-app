@@ -528,25 +528,31 @@ if st.button("✅ CHECK LOAN", use_container_width=True, type="primary"):
 
         
         st.markdown("---")
-        st.subheader("📊 DECISION")
-        # Define requested_within_limit BEFORE using it
-        requested_within_limit = requested_loan <= max_amt
-        
-        # Approval logic - based on affordability + credit score
 
-# Approval logic - based on affordability + credit score
+st.subheader("📋 DECISION")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric("📊 Credit Score", credit_score)
+
+with col2:
+    st.metric("💰 Monthly Payment", f"€{monthly_payment:,.0f}")
+
+with col3:
+    st.metric("✅ Affordable?", "Yes" if can_afford else "No")
+
+st.markdown("---")
 
 if credit_score < 600:
-    st.error("❌ DENIED - Credit score too low (minimum 600)")
-
+    st.error("❌ DENIED - Credit score too low")
 elif requested_loan > max_amt:
-    st.error(f"❌ DENIED - Requested loan (€{requested_loan:,.0f}) exceeds max approved amount (€{max_amt:,.0f})")
-
+    st.error(f"❌ DENIED - Loan exceeds max (€{max_amt:,.0f})")
 elif not can_afford:
-    st.error(f"❌ DENIED - Monthly payment (€{monthly_payment:,.0f}) exceeds affordable budget (€{available_for_payment:,.0f})")
-
+    st.error(f"❌ DENIED - Payment too high")
 else:
     st.success("✅ APPROVED!")
+
   
     st.markdown("---")
         col1, col2, col3 = st.columns(3)
@@ -586,6 +592,7 @@ else:
 st.markdown("---")
 
 st.markdown("<p style='text-align:center;font-size:11px;color:gray;'>🏦 Deutsche Kreditbank © 2025 | Smart Loan Approval System</p>", unsafe_allow_html=True)
+
 
 
 
