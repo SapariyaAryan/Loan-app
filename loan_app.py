@@ -528,7 +528,6 @@ if st.button("✅ CHECK LOAN", use_container_width=True, type="primary"):
 
         
         st.markdown("---")
-        
         st.subheader("📊 DECISION")
         # Define requested_within_limit BEFORE using it
         requested_within_limit = requested_loan <= max_amt
@@ -549,7 +548,7 @@ elif not can_afford:
 else:
     st.success("✅ APPROVED!")
   
-        st.markdown("---")
+    st.markdown("---")
         col1, col2, col3 = st.columns(3)
         with col1:
             st.metric("Credit Score", credit_score)
@@ -587,6 +586,7 @@ else:
 st.markdown("---")
 
 st.markdown("<p style='text-align:center;font-size:11px;color:gray;'>🏦 Deutsche Kreditbank © 2025 | Smart Loan Approval System</p>", unsafe_allow_html=True)
+
 
 
 
