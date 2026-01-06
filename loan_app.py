@@ -535,29 +535,20 @@ if st.button("✅ CHECK LOAN", use_container_width=True, type="primary"):
         
         # Approval logic - based on affordability + credit score
 
+# Approval logic - based on affordability + credit score
+
 if credit_score < 600:
     st.error("❌ DENIED - Credit score too low (minimum 600)")
-    customer_data = [customer_name, age, years_employed, monthly_income, expenses, credit_score, requested_loan, "Rejected", rate]
-    if save_to_google_sheets(customer_data):
-        st.info("💾 Application saved!")
 
-elif not requested_within_limit:
+elif requested_loan > max_amt:
     st.error(f"❌ DENIED - Requested loan (€{requested_loan:,.0f}) exceeds max approved amount (€{max_amt:,.0f})")
-    customer_data = [customer_name, age, years_employed, monthly_income, expenses, credit_score, requested_loan, "Rejected", rate]
-    if save_to_google_sheets(customer_data):
-        st.info("💾 Application saved!")
 
 elif not can_afford:
     st.error(f"❌ DENIED - Monthly payment (€{monthly_payment:,.0f}) exceeds affordable budget (€{available_for_payment:,.0f})")
-    customer_data = [customer_name, age, years_employed, monthly_income, expenses, credit_score, requested_loan, "Rejected", rate]
-    if save_to_google_sheets(customer_data):
-        st.info("💾 Application saved!")
 
 else:
     st.success("✅ APPROVED!")
-    customer_data = [customer_name, age, years_employed, monthly_income, expenses, credit_score, requested_loan, "Approved", rate]
-    if save_to_google_sheets(customer_data):
-        st.info("💾 Application saved!")
+
 
         
         st.markdown("---")
@@ -598,5 +589,6 @@ else:
 st.markdown("---")
 
 st.markdown("<p style='text-align:center;font-size:11px;color:gray;'>🏦 Deutsche Kreditbank © 2025 | Smart Loan Approval System</p>", unsafe_allow_html=True)
+
 
 
