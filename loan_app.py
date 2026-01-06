@@ -7,6 +7,67 @@ from sklearn.preprocessing import StandardScaler
 import pickle
 import os
 import re
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+from datetime import datetime
+
+# Initialize Google Sheets connection
+@st.cache_resource
+def get_gsheet_connection():
+    """Connect to Google Sheets using service account credentials"""
+    try:
+        # Get credentials from Streamlit secrets
+        gcp_service_account = st.secrets["gcp_service_account"]
+        
+        # Define the scope
+        scope = [
+            "https://spreadsheets.google.com/feeds",
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive"
+        ]
+        
+        # Authenticate with Google
+        credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+            gcp_service_account, scopes=scope
+        )
+        
+        # Connect to Google Sheets
+        gc = gspread.authorize(credentials)
+        
+        # Open your Google Sheet by ID
+        SHEET_ID = "1le0a4eqwZtXfT_3PUHmv0dokAGu0mh7Wx1Vp35T9rwU"
+        sh = gc.open_by_key(SHEET_ID)
+        
+        # Access the first worksheet (default)
+        return sh.sheet1
+    
+    except Exception as e:
+        st.error(f"Error connecting to Google Sheets: {e}")
+        return None
+
+def save_to_google_sheets(data):
+    """Save customer data to Google Sheets"""
+    try:
+        worksheet = get_gsheet_connection()
+        
+        if worksheet is None:
+            st.error("Could not connect to Google Sheets")
+            return False
+        
+        # Add timestamp
+        data_with_timestamp = [
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        ] + data
+        
+        # Append to sheet
+        worksheet.append_row(data_with_timestamp)
+        
+        return True
+    
+    except Exception as e:
+        st.error(f"Error saving to Google Sheets: {e}")
+        return False
+
 
 st.set_page_config(page_title="Deutsche Kreditbank - Loan Management", layout="wide")
 st.title("🏦 Deutsche Kreditbank - Loan Management System")
@@ -515,4 +576,5 @@ if st.button("✅ CHECK LOAN", use_container_width=True, type="primary"):
             st.metric("Monthly Income", f"€{monthly_income:,.0f}")
 
 st.markdown("---")
+
 st.markdown("<p style='text-align:center;font-size:11px;color:gray;'>🏦 Deutsche Kreditbank © 2025 | Smart Loan Approval System</p>", unsafe_allow_html=True)
