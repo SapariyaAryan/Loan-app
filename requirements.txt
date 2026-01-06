@@ -1,9 +1,5 @@
-streamlit 
-pandas 
-numpy 
-scikit-learn 
-Pillow 
-pdf2image 
-python-poppler-qt5 
-PyPDF2 
-
+streamlit
+pandas
+numpy
+scikit-learn
+pdfplumber
