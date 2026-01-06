@@ -548,9 +548,7 @@ elif not can_afford:
 
 else:
     st.success("✅ APPROVED!")
-
-
-        
+  
         st.markdown("---")
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -589,6 +587,7 @@ else:
 st.markdown("---")
 
 st.markdown("<p style='text-align:center;font-size:11px;color:gray;'>🏦 Deutsche Kreditbank © 2025 | Smart Loan Approval System</p>", unsafe_allow_html=True)
+
 
 
 
