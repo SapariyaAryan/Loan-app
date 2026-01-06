@@ -525,10 +525,13 @@ if st.button("✅ CHECK LOAN", use_container_width=True, type="primary"):
         # Check if user can afford the loan
         available_for_payment = savings * 0.7
         can_afford = monthly_payment <= available_for_payment
-        requested_within_limit = requested_loan <= max_amt
+
         
         st.markdown("---")
+        
         st.subheader("📊 DECISION")
+        # Define requested_within_limit BEFORE using it
+        requested_within_limit = requested_loan <= max_amt
         
         # Approval logic - based on affordability + credit score
 
@@ -595,4 +598,5 @@ else:
 st.markdown("---")
 
 st.markdown("<p style='text-align:center;font-size:11px;color:gray;'>🏦 Deutsche Kreditbank © 2025 | Smart Loan Approval System</p>", unsafe_allow_html=True)
+
 
