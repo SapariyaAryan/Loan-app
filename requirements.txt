@@ -1,0 +1,9 @@
+streamlit 
+pandas 
+numpy 
+scikit-learn 
+Pillow 
+pytesseract 
+pdf2image 
+python-poppler-qt5 
+PyPDF2 
