@@ -8,16 +8,16 @@ import pickle
 import os
 import re
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
 from datetime import datetime
 
 # Initialize Google Sheets connection
 @st.cache_resource
 def get_gsheet_connection():
-    """Connect to Google Sheets using service account credentials"""
+    """Connect to Google Sheets using Streamlit Secrets"""
     try:
-        # Get credentials from Streamlit secrets
-        gcp_service_account = st.secrets["gcp_service_account"]
+        # Get credentials from Streamlit secrets (SAFE WAY)
+        credentials_dict = st.secrets["gcp_service_account"]
         
         # Define the scope
         scope = [
@@ -27,9 +27,7 @@ def get_gsheet_connection():
         ]
         
         # Authenticate with Google
-        credentials = ServiceAccountCredentials.from_json_keyfile_dict(
-            gcp_service_account, scopes=scope
-        )
+        credentials = Credentials.from_service_account_info(credentials_dict, scopes=scope)
         
         # Connect to Google Sheets
         gc = gspread.authorize(credentials)
@@ -42,7 +40,7 @@ def get_gsheet_connection():
         return sh.sheet1
     
     except Exception as e:
-        st.error(f"Error connecting to Google Sheets: {e}")
+        st.error(f"❌ Error connecting to Google Sheets: {str(e)}")
         return None
 
 def save_to_google_sheets(data):
@@ -51,7 +49,6 @@ def save_to_google_sheets(data):
         worksheet = get_gsheet_connection()
         
         if worksheet is None:
-            st.error("Could not connect to Google Sheets")
             return False
         
         # Add timestamp
@@ -65,7 +62,7 @@ def save_to_google_sheets(data):
         return True
     
     except Exception as e:
-        st.error(f"Error saving to Google Sheets: {e}")
+        st.error(f"❌ Error saving to Google Sheets: {str(e)}")
         return False
 
 
