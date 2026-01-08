@@ -374,8 +374,8 @@ if not os.path.exists('loan_model.pkl'):
     df = pd.DataFrame(data)
     # More flexible approval criteria
     df['Loan_Approved'] = (
-        ((df['Monthly_Income'] > 800) & (df['Credit_Score'] > 600) & (df['Monthly_Expenses'] < df['Monthly_Income'] * 0.8)) |  # Standard criteria
-        ((df['Credit_Score'] > 750) & (df['Monthly_Income'] > 500))  # High credit score override
+        ((df['Monthly_Income'] > 800) & (df['Credit_Score'] > 600) & (df['Monthly_Expenses'] < df['Monthly_Income'] * 0.8)) |
+        ((df['Credit_Score'] > 750) & (df['Monthly_Income'] > 500))
     ).astype(int)
     df['Debt_to_Income_Ratio'] = df['Monthly_Expenses'] / df['Monthly_Income']
     df['Monthly_Savings'] = df['Monthly_Income'] - df['Monthly_Expenses']
@@ -454,8 +454,8 @@ st.subheader("💰 Loan Request")
 
 # Calculate max loan available based on income
 available_savings = monthly_income - expenses
-max_monthly_payment = available_savings * 0.7  # Max 70% of available income
-max_loan_amount = max_monthly_payment * 60  # Assuming 5-year repayment
+max_monthly_payment = available_savings * 0.7
+max_loan_amount = max_monthly_payment * 60
 
 st.info(f"📊 **Max Affordable Loan:** €{max_loan_amount:,.0f} (based on €{max_monthly_payment:,.0f}/month budget)")
 
@@ -468,6 +468,13 @@ requested_loan = st.number_input(
 )
 
 st.markdown("---")
+
+# Initialize variables for decision section
+monthly_payment = 0
+max_amt = 0
+risk = ""
+proba = 0
+can_afford = False
 
 if st.button("✅ CHECK LOAN", use_container_width=True, type="primary"):
     if not customer_name:
@@ -525,36 +532,32 @@ if st.button("✅ CHECK LOAN", use_container_width=True, type="primary"):
         # Check if user can afford the loan
         available_for_payment = savings * 0.7
         can_afford = monthly_payment <= available_for_payment
-
+        
+        # Show results
+        st.markdown("---")
+        st.subheader("📋 DECISION")
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("📊 Credit Score", credit_score)
+        with col2:
+            st.metric("💰 Monthly Payment", f"€{monthly_payment:,.0f}")
+        with col3:
+            st.metric("✅ Affordable?", "Yes" if can_afford else "No")
         
         st.markdown("---")
-
-st.subheader("📋 DECISION")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.metric("📊 Credit Score", credit_score)
-
-with col2:
-    st.metric("💰 Monthly Payment", f"€{monthly_payment:,.0f}")
-
-with col3:
-    st.metric("✅ Affordable?", "Yes" if can_afford else "No")
-
-st.markdown("---")
-
-if credit_score < 600:
-    st.error("❌ DENIED - Credit score too low")
-elif requested_loan > max_amt:
-    st.error(f"❌ DENIED - Loan exceeds max (€{max_amt:,.0f})")
-elif not can_afford:
-    st.error(f"❌ DENIED - Payment too high")
-else:
-    st.success("✅ APPROVED!")
-
-  
-    st.markdown("---")
+        
+        if credit_score < 600:
+            st.error("❌ DENIED - Credit score too low")
+        elif requested_loan > max_amt:
+            st.error(f"❌ DENIED - Loan exceeds max (€{max_amt:,.0f})")
+        elif not can_afford:
+            st.error(f"❌ DENIED - Payment too high")
+        else:
+            st.success("✅ APPROVED!")
+        
+        st.markdown("---")
+        st.subheader("💳 Loan Details")
         col1, col2, col3 = st.columns(3)
         with col1:
             st.metric("Credit Score", credit_score)
@@ -592,9 +595,3 @@ else:
 st.markdown("---")
 
 st.markdown("<p style='text-align:center;font-size:11px;color:gray;'>🏦 Deutsche Kreditbank © 2025 | Smart Loan Approval System</p>", unsafe_allow_html=True)
-
-
-
-
-
-
