@@ -591,6 +591,31 @@ if st.button("✅ CHECK LOAN", use_container_width=True, type="primary"):
             st.metric("Payment Ratio", f"{color} {ratio:.0f}%")
         with col4:
             st.metric("Monthly Income", f"€{monthly_income:,.0f}")
+        
+        # Determine approval status
+        approval_status = "APPROVED" if (credit_score >= 600 and requested_loan <= max_amt and can_afford) else "DENIED"
+        
+        # Save to Google Sheets
+        customer_data = [
+            customer_name,
+            str(age),
+            str(employment_years),
+            str(existing_loans),
+            f"€{monthly_income:,.2f}",
+            f"€{expenses:,.2f}",
+            str(credit_score),
+            f"€{requested_loan:,.2f}",
+            f"€{monthly_payment:,.2f}",
+            f"€{max_amt:,.2f}",
+            f"{rate}%",
+            approval_status,
+            f"{proba:.0%}"
+        ]
+        
+        if save_to_google_sheets(customer_data):
+            st.success("✅ Data saved to Google Sheets!")
+        else:
+            st.warning("⚠️ Could not save to Google Sheets")
 
 st.markdown("---")
 
