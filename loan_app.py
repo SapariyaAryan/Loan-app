@@ -40,12 +40,11 @@ except Exception as e:
     st.error(f"❌ Connection failed: {str(e)}")
 
 
-# Initialize Google Sheets connection
 @st.cache_resource
 def get_gsheet_connection():
     """Connect to Google Sheets using Streamlit Secrets"""
     try:
-        # Get credentials from Streamlit secrets (SAFE WAY)
+        # Get credentials from Streamlit secrets
         credentials_dict = st.secrets["gcp_service_account"]
         
         # Define the scope
@@ -65,11 +64,14 @@ def get_gsheet_connection():
         SHEET_ID = "1le0a4eqwZtXfT_3PUHmv0dokAGu0mh7Wx1Vp35T9rwU"
         sh = gc.open_by_key(SHEET_ID)
         
-        # Access the first worksheet (default)
+        # Access the first worksheet
         return sh.sheet1
     
+    except KeyError:
+        st.error("❌ 'gcp_service_account' NOT found in Secrets! Go to Settings → Secrets and paste your JSON")
+        return None
     except Exception as e:
-        st.error(f"❌ Error connecting to Google Sheets: {str(e)}")
+        st.error(f"❌ Connection Error: {str(e)}")
         return None
 
 def save_to_google_sheets(data):
@@ -91,7 +93,7 @@ def save_to_google_sheets(data):
         return True
     
     except Exception as e:
-        st.error(f"❌ Error saving to Google Sheets: {str(e)}")
+        st.warning(f"⚠️ Could not save: {str(e)}")
         return False
 
 
@@ -646,4 +648,5 @@ if st.button("✅ CHECK LOAN", use_container_width=True, type="primary"):
 st.markdown("---")
 
 st.markdown("<p style='text-align:center;font-size:11px;color:gray;'>🏦 Deutsche Kreditbank © 2025 | Smart Loan Approval System</p>", unsafe_allow_html=True)
+
 
