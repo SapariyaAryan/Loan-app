@@ -11,6 +11,35 @@ import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
 
+# TEST CONNECTION
+try:
+    import streamlit as st
+    from google.oauth2.service_account import Credentials
+    import gspread
+    
+    st.write("🧪 Testing Google Sheets connection...")
+    
+    credentials_dict = st.secrets["gcp_service_account"]
+    scope = [
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+    credentials = Credentials.from_service_account_info(credentials_dict, scopes=scope)
+    gc = gspread.authorize(credentials)
+    
+    SHEET_ID = "1le0a4eqwZtXfT_3PUHmv0dokAGu0mh7Wx1Vp35T9rwU"
+    sh = gc.open_by_key(SHEET_ID)
+    worksheet = sh.sheet1
+    
+    st.success("✅ Connection successful!")
+    st.write(f"Sheet name: {worksheet.title}")
+    st.write(f"Rows: {worksheet.row_count}, Columns: {worksheet.col_count}")
+    
+except Exception as e:
+    st.error(f"❌ Connection failed: {str(e)}")
+
+
 # Initialize Google Sheets connection
 @st.cache_resource
 def get_gsheet_connection():
@@ -617,3 +646,4 @@ if st.button("✅ CHECK LOAN", use_container_width=True, type="primary"):
 st.markdown("---")
 
 st.markdown("<p style='text-align:center;font-size:11px;color:gray;'>🏦 Deutsche Kreditbank © 2025 | Smart Loan Approval System</p>", unsafe_allow_html=True)
+
