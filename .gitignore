@@ -1,0 +1,19 @@
+# Secrets
+secrets.toml
+.streamlit/secrets.toml
+
+# Model files
+*.pkl
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
